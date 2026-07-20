@@ -9,7 +9,7 @@ just happens to be the caller).
 """
 from src.data.features import FEATURE_COLUMNS
 from src.monitoring.drift import build_reference_distribution
-from src.storage.database import SessionLocal
+from src.storage.database import SessionLocal, init_db
 from src.storage import crud
 
 
@@ -24,6 +24,8 @@ def capture_reference_distributions(train_df, run_id: str) -> None:
     monitor for drift, and this decouples drift monitoring from whichever
     scaler happens to be attached to the current production model.
     """
+    init_db()  # idempotent -- ensures the schema exists even if train.py
+    # runs before the API has ever started (e.g. a fresh Postgres volume)
     db = SessionLocal()
     try:
         for ticker, group in train_df.groupby("ticker", sort=False):

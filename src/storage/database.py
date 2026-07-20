@@ -29,3 +29,20 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def init_db() -> None:
+    """
+    Creates all tables if they don't already exist. create_all is
+    naturally idempotent (checks for each table's existence before
+    creating it), so this is safe to call on every process startup rather
+    than needing a separate one-time migration step -- appropriate while
+    the schema is still moving; switch to Alembic once it stabilizes.
+
+    Called from every entry point that touches this database (the API at
+    startup, and src/monitoring/reference_capture.py before training
+    writes reference distributions) rather than relying on the API having
+    started first -- training should work standalone against a fresh
+    Postgres volume, not depend on start-up ordering with another service.
+    """
+    Base.metadata.create_all(bind=engine)

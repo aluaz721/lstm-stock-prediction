@@ -26,12 +26,17 @@ from src.data.fetch import TICKERS, fetch_ticker_history
 from src.data.features import FEATURE_COLUMNS, add_technical_indicators
 from src.inference import predict_next_close, forecast_horizon, make_pyfunc_predict_fn, next_business_day
 from src.monitoring.drift import compute_psi, is_drifted, DEFAULT_THRESHOLD
-from src.storage.database import get_db
+from src.storage.database import get_db, init_db
 from src.storage import crud
 
 SEQ_LEN = 10
 MODEL_TYPES = ["lstm", "qlstm"]
 DRIFT_CHECK_WINDOW_DAYS = 30  # "current" sample size for PSI comparison
+
+# Creates the monitoring schema's tables if they don't exist yet -- see
+# init_db's docstring for why this runs here AND in reference_capture.py
+# rather than assuming one has already run before the other.
+init_db()
 
 app = FastAPI(title="Quantum Stock MLOps API", version="0.1.0")
 
