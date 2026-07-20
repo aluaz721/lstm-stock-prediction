@@ -6,6 +6,12 @@ yet trained -- see Status below) to predict next-day stock returns for a
 Model Registry, served through a FastAPI backend, with PSI-based drift
 monitoring backed by Postgres. Runs entirely locally via `docker-compose`.
 
+<figure>
+  <img src="./docs/dashboard.png" alt="Screenshot of frontend dashboard.">
+  <figcaption>Screenshot of interactive dashboard displaying predictions from
+  the latest model version pushed to production.</figcaption>
+</figure>
+
 ## Architecture
 
 ```
